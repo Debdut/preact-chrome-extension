@@ -136,6 +136,22 @@ async function buildHtmlPage(name: string, entry: string, outdir: string, dev = 
     ],
   });
 
+
+  const cssFiles = fs.readdirSync(resolve(outdir, name)).filter((file: string) => file.endsWith('.css'));
+
+  if(cssFiles.length > 0) {
+    const indexHtmlPath = resolve(outdir, name, "index.html");
+    let indexHtmlContent = fs.readFileSync(indexHtmlPath, 'utf8');
+    const allLinkTags = cssFiles.map((file: string) => {
+      return `<link rel="stylesheet" href="${file}">`;
+    });
+    indexHtmlContent = indexHtmlContent.replace('</head>', `${allLinkTags}\n</head>`);
+
+    fs.writeFileSync(indexHtmlPath, indexHtmlContent);
+  }
+
+
+
   console.timeEnd(prompt);
   
   return out;
