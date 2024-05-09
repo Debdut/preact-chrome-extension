@@ -589,7 +589,7 @@ function DevBrowserExt(browsers: string[]) {
     versions = MatchExtVersions(matchedBrowsers);
   }
 
-  DevVersionedExt(versions);
+  const build = DevVersionedExt(versions);
 
   const profileRoot = CreateProfileRoot();
   const commands: string[] = [];
@@ -607,9 +607,8 @@ function DevBrowserExt(browsers: string[]) {
     commands.push("sleep 100000"); // TODO: A more elegant way of doing nothing?
   }
 
-  const { result } = concurrently(commands);
-
-  result
+  build
+    .then(() => concurrently(commands).result)
     .then(() => {
       console.log("All processes exited");
       process.exit(0);
